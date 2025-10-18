@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asistente Virtual - Universidad Popular del Cesar</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c5aa0;
+            --primary-dark: #1e3d72;
+            --secondary: #f8f9fa;
+            --accent: #4a7bc8;
+            --text: #333;
+            --text-light: #6c757d;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        .header-text h1 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .header-text p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 65vh;
+        }
+
+        .chat-header {
+            background: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h2 {
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #4ade80;
+        }
+
+        #chat {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #f8fafc;
+        }
+
+        .msg {
+            padding: 12px 16px;
+            border-radius: 18px;
+            max-width: 80%;
+            position: relative;
+            line-height: 1.5;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 6px;
+        }
+
+        .bot {
+            background: white;
+            color: var(--text);
+            align-self: flex-start;
+            border-bottom-left-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .msg-time {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-bottom-left-radius: 6px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 5px;
+        }
+
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background: var(--text-light);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            animation: typing 1.5s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        #form {
+            display: flex;
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            background: #f8fafc;
+        }
+
+        button {
+            padding: 0 25px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+        }
+
+        button i {
+            font-size: 1.2rem;
+        }
+
+        .suggestions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .suggestion {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .suggestion:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: 100%;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .msg {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="header-text">
+                <h1>Asistente Virtual - UPC Aguachica</h1>
+                <p>Orientación sobre tutorías académicas</p>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>Chat de Asistencia</h2>
+                <div class="status">
+                    <div class="status-dot"></div>
+                    <span>En línea</span>
+                </div>
+            </div>
+
+            <div id="chat">
+                <div class="msg bot">
+                    ¡Hola! Soy tu asistente virtual de la Universidad Popular del Cesar - Seccional Aguachica. Estoy
+                    aquí para orientarte sobre los procesos de tutorías académicas. ¿En qué puedo ayudarte hoy?
+                    <div class="msg-time">Ahora</div>
+                </div>
+
+                <div class="suggestions">
+                    <div class="suggestion">¿Cómo solicito una tutoría?</div>
+                    <div class="suggestion">Horarios disponibles</div>
+                    <div class="suggestion">Requisitos para tutorías</div>
+                </div>
+            </div>
+
+            <div class="typing-indicator">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+
+            <form id="form">
+                <input type="text" id="mensaje" placeholder="Escribe tu mensaje..." required>
+                <button type="submit">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ Pega aquí tu clave (NO la compartas públicamente)
+        const API_KEY = "AIzaSyC4XmYlGzDrWnoBjW-lC9IkPxyA3gyvBP0";
+
+        const chat = document.getElementById("chat");
+        const form = document.getElementById("form");
+        const input = document.getElementById("mensaje");
+        const typingIndicator = document.querySelector('.typing-indicator');
+        const suggestions = document.querySelectorAll('.suggestion');
+
+        // Rol del sistema (define el tipo de respuestas)
+        const rolSistema = `
+Eres un asistente virtual de la Universidad Popular del Cesar - Seccional Aguachica. 
+Tu tarea es orientar a los estudiantes sobre los procesos de tutorías: 
+cómo solicitarlas, horarios, docentes y requisitos. 
+Responde con amabilidad, claridad y lenguaje formal.
+Si te preguntan algo fuera del tema, redirige la conversación a las tutorías.
+`;
+        // Historial del chat
+        const historial = [
+            { role: "system", content: rolSistema }
+        ];
+
+        // Mostrar mensajes en pantalla
+        function mostrarMensaje(texto, clase) {
+            const div = document.createElement("div");
+            div.className = `msg ${clase}`;
+
+            // Obtener hora actual
+            const ahora = new Date();
+            const hora = ahora.getHours().toString().padStart(2, '0');
+            const minutos = ahora.getMinutes().toString().padStart(2, '0');
+            const tiempo = `${hora}:${minutos}`;
+
+            div.innerHTML = `${texto}<div class="msg-time">${tiempo}</div>`;
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // Mostrar indicador de escritura
+        function mostrarEscribiendo() {
+            typingIndicator.style.display = 'block';
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // Ocultar indicador de escritura
+        function ocultarEscribiendo() {
+            typingIndicator.style.display = 'none';
+        }
+
+        // Manejar envío del formulario
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const mensaje = input.value.trim();
+            if (!mensaje) return;
+
+            mostrarMensaje(mensaje, "user");
+            input.value = "";
+
+            historial.push({ role: "user", content: mensaje });
+
+            // Ocultar sugerencias después del primer mensaje
+            document.querySelector('.suggestions').style.display = 'none';
+
+            try {
+                mostrarEscribiendo();
+
+                const res = await fetch(
+                    // ✅ Modelo estable y gratuito
+                    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + API_KEY,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            contents: historial.map(msg => ({
+                                parts: [{ text: msg.content }]
+                            }))
+                        })
+                    }
+                );
+
+                ocultarEscribiendo();
+
+                if (!res.ok) {
+                    mostrarMensaje("⚠️ Error: " + res.status + " (" + res.statusText + ")", "bot");
+                    console.error("Error HTTP:", res.status, await res.text());
+                    return;
+                }
+
+                const data = await res.json();
+                const respuesta = data?.candidates?.[0]?.content?.parts?.[0]?.text || "No entendí 😅";
+
+                mostrarMensaje(respuesta, "bot");
+                historial.push({ role: "assistant", content: respuesta });
+
+            } catch (error) {
+                ocultarEscribiendo();
+                mostrarMensaje("🚫 Error al conectar con la IA", "bot");
+                console.error(error);
+            }
+        });
+
+        // Agregar funcionalidad a las sugerencias
+        suggestions.forEach(suggestion => {
+            suggestion.addEventListener('click', () => {
+                input.value = suggestion.textContent;
+                form.dispatchEvent(new Event('submit'));
+            });
+        });
+    </script>
+</body>
+
+</html>
